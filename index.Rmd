@@ -1,6 +1,6 @@
 ---
 title: "Gov 50 Final Project"
-author: "Your Name Here"
+author: "Isa MarionSims"
 description: "My final project"
 output:
   distill::distill_article:
@@ -11,4 +11,39 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+Does an individual’s religiousness affect their political ideology (on the spectrum between “left” and “right”)?  I hypothesize that, based on my knowledge of how the American political arena works, those who are more pious will tend more towards right-wing beliefs because the right is often understood as the more conservative party, and several religions espouse conservative practices as part of their belief systems; I am interested in understanding whether this pattern is, as I suspect, not just an American phenomenon.  To test this, I intend to use data from the most recent wave of the World Values Survey, where my unit of analysis will be an individual, and I am also particularly interested in seeing how/if those trends differ across different religions and/or nationalities as a secondary area of exploration.  My explanatory variable of interest is an individual’s self-professed level of religiosity as measured by this question: “Independently of whether you attend religious services or not, would you say you are…?,” where respondents can answer either “1) A religious person,” “2) Not a religious person,” or “3) An atheist.”  My outcome variable of interest is an individual’s self-placement on the spectrum of political ideology as measured by this question: “In political matters, people talk of "the left" and "the right."  How would you place your views on this scale, generally speaking?,” to which respondents code their answers on a scale from 1 to 10 where 1 is “Left” and 10 is “Right.”  The observation that would prove my hypothesis would be if the data suggested that individuals who indicated that they were more religious did in fact trend more towards the right end of the political spectrum; and alternatively, my findings would disprove my hypothesis if I observed a trend that showed that individuals who indicated that they were more religious did not trend more towards the right end of the political spectrum (either because there was a relatively even split or because they actually tended more towards the left).
+
+
+```{r, warning = FALSE}
+library(tidyverse)
+
+load("WVS_Cross-National_Wave_7_rData_v4_0")
+
+WVS_EVS <- `WVS_Cross-National_Wave_7_rData_v4_0`
+
+```
+
+```{r religion_politics_plot}
+WVS <- WVS_EVS |>
+  filter(A_WAVE == 7,
+         A_STUDY == 2)
+
+religion_politics_data <- WVS |>
+  filter(Q173 %in% c(1, 2, 3))
+
+religion_politics_plot <- ggplot(religion_politics_data,
+                                 aes(x = Q240)) +
+  geom_bar(aes(y = ..prop.., group = 1)) +
+  facet_wrap(~ Q173) +
+  labs(title = "Political Ideology by Level of Religiosity",
+       x = "Spectrum of Political Ideology from Left (1) to Right (10)",
+       y = "Proportion")
+religion_politics_plot
+  
+## still to do: change "1, 2, 3" to corresponding words; change values on x-axis to 1-10; specify what "proportion" means
+
+## Q6 = how important is religion, Q173 = religious person?
+## Q240 = left-right political scale
+```
+
+
